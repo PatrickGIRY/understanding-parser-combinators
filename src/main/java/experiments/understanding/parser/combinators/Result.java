@@ -9,6 +9,10 @@ public class Result {
         return new Result(remaining);
     }
 
+    public static Result success(String remaining) {
+        return new Result(remaining);
+    }
+
     private Result(String remaining) {
         this.remaining = remaining;
     }
