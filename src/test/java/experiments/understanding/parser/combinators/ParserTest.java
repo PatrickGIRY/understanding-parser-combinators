@@ -11,4 +11,8 @@ public class ParserTest {
         assertThat(Parser.pCharA(null)).isEqualTo(Result.failure(null));
     }
 
+    @Test
+    public void should_return_failure_with_empty_remaining_when_input_is_empty() throws Exception {
+        assertThat(Parser.pCharA("")).isEqualTo(Result.failure(""));
+    }
 }
