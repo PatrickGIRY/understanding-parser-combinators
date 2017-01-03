@@ -8,12 +8,12 @@ public class ParserTest {
 
     @Test
     public void should_return_failure_with_null_remaining_when_input_is_null() throws Exception {
-        assertThat(Parser.pChar('A', null)).isEqualTo(Result.failure(null, "No more input"));
+        assertThat(Parser.pChar('A', null)).isEqualTo(Result.failure("No more input"));
     }
 
     @Test
     public void should_return_failure_with_empty_remaining_when_input_is_empty() throws Exception {
-        assertThat(Parser.pChar('A', "")).isEqualTo(Result.failure("", "No more input"));
+        assertThat(Parser.pChar('A', "")).isEqualTo(Result.failure("No more input"));
     }
 
     @Test
@@ -28,6 +28,6 @@ public class ParserTest {
 
     @Test
     public void should_return_failure_with_input_as_remaining_when_input_not_start_by_A() throws Exception {
-        assertThat(Parser.pChar('A', "ZBC")).isEqualTo(Result.failure("ZBC", "Expecting A, got Z"));
+        assertThat(Parser.pChar('A', "ZBC")).isEqualTo(Result.failure("Expecting A, got Z"));
     }
 }

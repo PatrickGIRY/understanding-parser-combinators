@@ -7,10 +7,10 @@ public class Parser {
             if (first == match) {
                 return Result.success(input.substring(1));
             } else {
-                return Result.failure(input, "Expecting %c, got %c", match, first);
+                return Result.failure("Expecting %c, got %c", match, first);
             }
         } else {
-            return Result.failure(input, "No more input");
+            return Result.failure("No more input");
         }
     }
 }

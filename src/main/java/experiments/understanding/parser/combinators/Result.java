@@ -5,8 +5,8 @@ import java.util.Objects;
 public class Result {
     private final String remaining;
 
-    public static Result failure(String remaining, String messageFormat, Object... messageArguments) {
-        return new Failure(remaining, messageFormat, messageArguments);
+    public static Result failure(String messageFormat, Object... messageArguments) {
+        return new Failure(messageFormat, messageArguments);
     }
 
     public static Result success(String remaining) {
@@ -40,8 +40,8 @@ public class Result {
     private static class Failure extends Result {
         private final String message;
 
-        private Failure(String remaining, String messageFormat, Object... messageArguments) {
-            super(remaining);
+        private Failure(String messageFormat, Object... messageArguments) {
+            super(null);
             this.message = String.format(messageFormat, messageArguments);
         }
 
