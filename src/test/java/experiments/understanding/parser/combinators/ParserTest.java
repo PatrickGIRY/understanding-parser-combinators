@@ -18,12 +18,12 @@ public class ParserTest {
 
     @Test
     public void should_return_success_with_remaining_when_input_start_by_A() throws Exception {
-        assertThat(Parser.pChar('A', "ABC")).isEqualTo(Result.success("BC"));
+        assertThat(Parser.pChar('A', "ABC")).isEqualTo(Result.success('A', "BC"));
     }
 
     @Test
     public void should_return_success_with_remaining_when_input_start_by_E() throws Exception {
-        assertThat(Parser.pChar('E', "EBC")).isEqualTo(Result.success("BC"));
+        assertThat(Parser.pChar('E', "EBC")).isEqualTo(Result.success('E', "BC"));
     }
 
     @Test
