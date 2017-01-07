@@ -3,13 +3,11 @@ package experiments.understanding.parser.combinators;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.function.Function;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ParserTest {
 
-    private Function<String, Result> parseA;
+    private Parser parseA;
 
     @Before
     public void setUp() throws Exception {
@@ -34,7 +32,7 @@ public class ParserTest {
 
     @Test
     public void should_return_success_with_remaining_when_input_start_by_E() throws Exception {
-        Function<String, Result> parseE = Parser.pChar('E');
+        Parser parseE = Parser.pChar('E');
         assertThat(parseE.apply("EBC")).isEqualTo(Result.success('E', "BC"));
     }
 
