@@ -1,17 +1,10 @@
 package experiments.understanding.parser.combinators;
 
-import java.util.function.Function;
+@FunctionalInterface
+public interface Parser<T> {
 
-public class Parser {
-
-    private final Function<String, Result> innerFn;
-
-    private Parser(Function<String, Result> innerFn) {
-        this.innerFn = innerFn;
-    }
-
-    public static Parser pChar(int match) {
-        return new Parser((String input) -> {
+    static Parser<Integer> pChar(int match) {
+        return (String input) -> {
             if (input != null && input.length() > 0) {
                 int first = input.codePointAt(0);
                 if (first == match) {
@@ -22,10 +15,15 @@ public class Parser {
             } else {
                 return Result.failure("No more input");
             }
-        });
+        };
     }
 
-    public Result apply(String input) {
-        return innerFn.apply(input);
+    Result<T> apply(String input);
+
+    default <U> Parser<Pair<T, U>> andThen(Parser<U> otherParser) {
+        return (String input) -> apply(input) //
+                .onSuccess((T match, String remaining) -> otherParser.apply(remaining)  //
+                        .onSuccess((U match2, String remaining2) ->  //
+                                Result.success(Pair.of(match, match2), remaining2)));
     }
 }

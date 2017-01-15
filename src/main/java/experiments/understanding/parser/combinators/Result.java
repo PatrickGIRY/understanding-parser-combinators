@@ -1,29 +1,37 @@
 package experiments.understanding.parser.combinators;
 
 import java.util.Objects;
+import java.util.function.BiFunction;
 
-public abstract class Result {
+public abstract class Result<T> {
 
-    public static <T> Result failure(String messageFormat, Object... messageArguments) {
-        return new Failure<T>(messageFormat, messageArguments);
+    public static <T> Result<T> failure(String messageFormat, Object... messageArguments) {
+        return new Failure<>(messageFormat, messageArguments);
     }
 
-    public static Result success(int matched, String remaining) {
+    public static Result<Integer> success(int matched, String remaining) {
         return new Success<>(matched, remaining);
     }
 
-    public static <T> Result success(T matched, String remaining) {
-        return new Success<T>(matched, remaining);
+    public static <T> Result<T> success(T matched, String remaining) {
+        return new Success<>(matched, remaining);
     }
 
     private Result() {
     }
 
-    private static class Failure<T> extends Result {
+    public abstract <R> Result<R> onSuccess(BiFunction<T, String, Result<R>> mapper);
+
+    private static class Failure<T> extends Result<T> {
         private final String message;
 
         private Failure(String messageFormat, Object... messageArguments) {
             this.message = String.format(messageFormat, messageArguments);
+        }
+
+        @Override
+        public <R> Result<R> onSuccess(BiFunction<T, String, Result<R>> mapper) {
+            return Result.failure(this.message);
         }
 
         @Override
@@ -47,7 +55,7 @@ public abstract class Result {
         }
     }
 
-    private static class Success<T> extends Result {
+    private static class Success<T> extends Result<T> {
         private final T matched;
         private final String remaining;
 
@@ -55,6 +63,11 @@ public abstract class Result {
             super();
             this.matched = matched;
             this.remaining = remaining;
+        }
+
+        @Override
+        public <R> Result<R> onSuccess(BiFunction<T, String, Result<R>> mapper) {
+            return mapper.apply(matched, remaining);
         }
 
         @Override
