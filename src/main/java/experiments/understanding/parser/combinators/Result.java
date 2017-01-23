@@ -2,6 +2,7 @@ package experiments.understanding.parser.combinators;
 
 import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 public abstract class Result<T> {
 
@@ -22,6 +23,8 @@ public abstract class Result<T> {
 
     public abstract <R> Result<R> onSuccess(BiFunction<T, String, Result<R>> mapper);
 
+    public abstract Result<T> onFailure(Supplier<Result<T>> supplier);
+
     private static class Failure<T> extends Result<T> {
         private final String message;
 
@@ -32,6 +35,11 @@ public abstract class Result<T> {
         @Override
         public <R> Result<R> onSuccess(BiFunction<T, String, Result<R>> mapper) {
             return Result.failure(this.message);
+        }
+
+        @Override
+        public Result<T> onFailure(Supplier<Result<T>> supplier) {
+            return supplier.get();
         }
 
         @Override
@@ -68,6 +76,11 @@ public abstract class Result<T> {
         @Override
         public <R> Result<R> onSuccess(BiFunction<T, String, Result<R>> mapper) {
             return mapper.apply(matched, remaining);
+        }
+
+        @Override
+        public Result<T> onFailure(Supplier<Result<T>> supplier) {
+            return this;
         }
 
         @Override

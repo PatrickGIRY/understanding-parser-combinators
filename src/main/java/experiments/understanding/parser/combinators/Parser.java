@@ -26,4 +26,8 @@ public interface Parser<T> {
                         .onSuccess((U match2, String remaining2) ->  //
                                 Result.success(Pair.of(match, match2), remaining2)));
     }
+
+    default Parser<T> orElse(Parser<T> otherParser) {
+        return (String input) -> apply(input).onFailure(() -> otherParser.apply(input));
+    }
 }
