@@ -1,5 +1,6 @@
 package experiments.understanding.parser.combinators;
 
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @FunctionalInterface
@@ -40,7 +41,15 @@ public interface Parser<T> {
 
     @SafeVarargs
     static <T> Parser<T> choice(Parser<T>... parsers) {
-        return Stream.of(parsers).reduce(empty(), Parser::orElse);
+        return choice(Stream.of(parsers));
+    }
+
+    static <T> Parser<T> choice(Stream<Parser<T>> parserStream) {
+        return parserStream.reduce(empty(), Parser::orElse);
+    }
+
+    static Parser<Integer> anyOf(int... characters) {
+        return choice(IntStream.of(characters).mapToObj(Parser::pChar));
     }
 
 }

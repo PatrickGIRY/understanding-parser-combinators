@@ -143,5 +143,19 @@ public class ParserTest {
         assertThat(Parser.choice().apply("AZZ")).isEqualTo(Result.failure("Empty input expected"));
     }
 
+    @Test
+    public void should_parse_any_of_characters() throws Exception {
+        Parser<Integer> anyOf = Parser.anyOf('A', 'B', 'C');
+
+        assertThat(anyOf.apply("AZZ")).isEqualTo(Result.success('A', "ZZ"));
+        assertThat(anyOf.apply("BZZ")).isEqualTo(Result.success('B', "ZZ"));
+        assertThat(anyOf.apply("CZZ")).isEqualTo(Result.success('C', "ZZ"));
+        assertThat(anyOf.apply("ZZZ")).isEqualTo(Result.failure("Expecting C, got Z"));
+        assertThat(Parser.anyOf('A').apply("AZZ")).isEqualTo(Result.success('A', "ZZ"));
+        assertThat(Parser.anyOf().apply("")).isEqualTo(Result.success(null, ""));
+        assertThat(Parser.anyOf().apply("AZZ")).isEqualTo(Result.failure("Empty input expected"));
+    }
+
+
 
 }
