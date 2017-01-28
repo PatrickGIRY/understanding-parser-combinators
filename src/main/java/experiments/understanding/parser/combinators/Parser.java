@@ -1,5 +1,7 @@
 package experiments.understanding.parser.combinators;
 
+import java.util.stream.Stream;
+
 @FunctionalInterface
 public interface Parser<T> {
 
@@ -30,4 +32,15 @@ public interface Parser<T> {
     default Parser<T> orElse(Parser<T> otherParser) {
         return (String input) -> apply(input).onFailure(() -> otherParser.apply(input));
     }
+
+    static <T> Parser<T> empty() {
+        return (String input) -> input == null || input.length() == 0
+                ? Result.success(null, input) : Result.failure("Empty input expected");
+    }
+
+    @SafeVarargs
+    static <T> Parser<T> choice(Parser<T>... parsers) {
+        return Stream.of(parsers).reduce(empty(), Parser::orElse);
+    }
+
 }

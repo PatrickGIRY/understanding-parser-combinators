@@ -102,7 +102,7 @@ public class ParserTest {
     }
 
     @Test
-    public void should_ailure_with_input_as_remaining_when_input_not_start_by_A_and_B_or_C() throws Exception {
+    public void should_return_failure_with_input_as_remaining_when_input_not_start_by_A_and_B_or_C() throws Exception {
         Parser<Integer> parseA = Parser.pChar('A');
         Parser<Integer> parseB = Parser.pChar('B');
         Parser<Integer> parseC = Parser.pChar('C');
@@ -111,4 +111,37 @@ public class ParserTest {
         assertThat(parseAAndThenBorElseC.apply("QBZ")).isEqualTo(Result.failure("Expecting A, got Q"));
         assertThat(parseAAndThenBorElseC.apply("AQZ")).isEqualTo(Result.failure("Expecting C, got Q"));
     }
+
+    @Test
+    public void should_return_success_with_empty_remaining_when_input_is_empty() throws Exception {
+        assertThat(Parser.empty().apply("")).isEqualTo(Result.success(null, ""));
+    }
+
+    @Test
+    public void should_return_success_with_null_remaining_when_input_is_null() throws Exception {
+        assertThat(Parser.empty().apply(null)).isEqualTo(Result.success(null, null));
+    }
+
+    @Test
+    public void should_return_failure_when_input_is_not_empty() throws Exception {
+        assertThat(Parser.empty().apply("A")).isEqualTo(Result.failure("Empty input expected"));
+    }
+
+    @Test
+    public void should_choice_between_parsers() throws Exception {
+        Parser<Integer> parseA = Parser.pChar('A');
+        Parser<Integer> parseB = Parser.pChar('B');
+        Parser<Integer> parseC = Parser.pChar('C');
+        Parser<Integer> choice = Parser.choice(parseA, parseB, parseC);
+
+        assertThat(choice.apply("AZZ")).isEqualTo(Result.success('A', "ZZ"));
+        assertThat(choice.apply("BZZ")).isEqualTo(Result.success('B', "ZZ"));
+        assertThat(choice.apply("CZZ")).isEqualTo(Result.success('C', "ZZ"));
+        assertThat(choice.apply("ZZZ")).isEqualTo(Result.failure("Expecting C, got Z"));
+        assertThat(Parser.choice(parseA).apply("AZZ")).isEqualTo(Result.success('A', "ZZ"));
+        assertThat(Parser.choice().apply("")).isEqualTo(Result.success(null, ""));
+        assertThat(Parser.choice().apply("AZZ")).isEqualTo(Result.failure("Empty input expected"));
+    }
+
+
 }
