@@ -49,7 +49,14 @@ public interface Parser<T> {
     }
 
     static Parser<Integer> anyOf(int... characters) {
-        return choice(IntStream.of(characters).mapToObj(Parser::pChar));
+        return anyOf(IntStream.of(characters));
     }
 
+    static Parser<Integer> anyOf(IntStream characterStream) {
+        return choice(characterStream.mapToObj(Parser::pChar));
+    }
+
+    static Parser<Integer> anyOfRangeClosed(int startInclusive, int endInclusive) {
+        return anyOf(IntStream.rangeClosed(startInclusive, endInclusive));
+    }
 }

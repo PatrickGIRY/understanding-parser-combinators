@@ -156,6 +156,31 @@ public class ParserTest {
         assertThat(Parser.anyOf().apply("AZZ")).isEqualTo(Result.failure("Empty input expected"));
     }
 
+    @Test
+    public void should_return_success_when_input_start_by_lowercase() throws Exception {
+        Parser<Integer> parseLowercase = Parser.anyOfRangeClosed('a', 'z');
 
+        assertThat(parseLowercase.apply("aBC")).isEqualTo(Result.success('a', "BC"));
+    }
 
+    @Test
+    public void should_return_failure_when_input_not_start_by_lowercase() throws Exception {
+        Parser<Integer> parseLowercase = Parser.anyOfRangeClosed('a', 'z');
+
+        assertThat(parseLowercase.apply("ABC")).isEqualTo(Result.failure("Expecting z, got A"));
+    }
+
+    @Test
+    public void should_return_success_when_input_start_by_digit() throws Exception {
+        Parser<Integer> parseDigit = Parser.anyOfRangeClosed('0', '9');
+
+        assertThat(parseDigit.apply("1BC")).isEqualTo(Result.success('1', "BC"));
+    }
+
+    @Test
+    public void should_return_failure_when_input_not_start_by_digit() throws Exception {
+        Parser<Integer> parseDigit = Parser.anyOfRangeClosed('0', '9');
+
+        assertThat(parseDigit.apply("ABC")).isEqualTo(Result.failure("Expecting 9, got A"));
+    }
 }
