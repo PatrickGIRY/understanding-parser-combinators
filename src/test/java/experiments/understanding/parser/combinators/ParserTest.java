@@ -45,29 +45,29 @@ public class ParserTest {
     @Test
     public void should_return_success_with_pair_and_remaining_when_input_start_by_AB() throws Exception {
         Parser<Integer> parseB = Parser.pChar('B');
-        Parser<Pair<Integer, Integer>> parseAThenB = parseA.andThen(parseB);
+        Parser<Pair<Integer, Integer>> parseAB = parseA.andThen(parseB);
 
-        assertThat(parseAThenB.apply("ABC")).isEqualTo(Result.success(Pair.of('A', 'B'), "C"));
+        assertThat(parseAB.apply("ABC")).isEqualTo(Result.success(Pair.of('A', 'B'), "C"));
     }
 
     @Test
     public void should_return_success_with_pair_and_remaining_when_input_start_by_ABC() throws Exception {
         Parser<Integer> parseB = Parser.pChar('B');
-        Parser<Pair<Integer, Integer>> parseAThenB = parseA.andThen(parseB);
+        Parser<Pair<Integer, Integer>> parseAB = parseA.andThen(parseB);
         Parser<Integer> parseC = Parser.pChar('C');
-        Parser<Pair<Pair<Integer, Integer>, Integer>> parseAThenBThenC = parseAThenB.andThen(parseC);
+        Parser<Pair<Pair<Integer, Integer>, Integer>> parseABC = parseAB.andThen(parseC);
 
-        assertThat(parseAThenBThenC.apply("ABCD")).isEqualTo(Result.success(Pair.of(Pair.of('A', 'B'), 'C'), "D"));
+        assertThat(parseABC.apply("ABCD")).isEqualTo(Result.success(Pair.of(Pair.of('A', 'B'), 'C'), "D"));
     }
 
 
     @Test
     public void should_return_failure_with_input_as_remaining_when_input_not_start_by_AB() throws Exception {
         Parser<Integer> parseB = Parser.pChar('B');
-        Parser<Pair<Integer, Integer>> parseAThenB = parseA.andThen(parseB);
+        Parser<Pair<Integer, Integer>> parseAB = parseA.andThen(parseB);
 
-        assertThat(parseAThenB.apply("ZBC")).isEqualTo(Result.failure("Expecting A, got Z"));
-        assertThat(parseAThenB.apply("AZC")).isEqualTo(Result.failure("Expecting B, got Z"));
+        assertThat(parseAB.apply("ZBC")).isEqualTo(Result.failure("Expecting A, got Z"));
+        assertThat(parseAB.apply("AZC")).isEqualTo(Result.failure("Expecting B, got Z"));
     }
 
     @Test
